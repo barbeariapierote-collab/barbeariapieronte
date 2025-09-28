@@ -4,6 +4,7 @@ const STORAGE_KEY = 'barberShopData';
 function getStorageData() {
     try {
         const data = localStorage.getItem(STORAGE_KEY);
+        // O Matheus está na inicialização padrão
         return data ? JSON.parse(data) : {
             records: [],
             config: {
@@ -12,7 +13,7 @@ function getStorageData() {
                 users: {
                     pierote: 'ownerpass',
                     luis: 'luis123',
-                    matheus: 'matheus123'
+                    matheus: 'matheus123' // Matheus definido aqui
                 },
                 commissionPct: 40
             }
@@ -55,6 +56,7 @@ const fromDateInput = document.getElementById('fromDate');
 const toDateInput = document.getElementById('toDate');
 const applyRangeBtn = document.getElementById('applyRange');
 const presetRangeSelect = document.getElementById('presetRange');
+const reportUserSelect = document.getElementById('reportUserSelect'); // NOVO: Filtro de Funcionário
 const svcBtns = document.querySelectorAll('.svcBtn');
 const saveCfgBtn = document.getElementById('saveCfgBtn');
 const resetBtn = document.getElementById('resetBtn');
@@ -66,7 +68,8 @@ let data = getStorageData();
 loginBtn.addEventListener('click', () => {
     const user = inpUser.value.toLowerCase();
     const pass = inpPass.value;
-    if (data.config.users[user] === pass) {
+    // Verifica se o usuário existe e se a senha está correta
+    if (data.config.users[user] && data.config.users[user] === pass) {
         currentUser = user;
         showActions();
     } else {
@@ -79,21 +82,51 @@ demoBtn.addEventListener('click', () => {
     showActions();
 });
 
+function populateReportUserSelect() {
+    // Adiciona todos os usuários, exceto o proprietário ('pierote'), no filtro
+    const users = Object.keys(data.config.users).filter(user => user !== 'pierote');
+    reportUserSelect.innerHTML = '<option value="">Todos</option>';
+    users.forEach(user => {
+        const option = document.createElement('option');
+        option.value = user;
+        // Capitaliza a primeira letra para exibir
+        option.textContent = user.charAt(0).toUpperCase() + user.slice(1);
+        reportUserSelect.appendChild(option);
+    });
+}
+
 function showActions() {
     loginCard.style.display = 'none';
     actionsCard.style.display = 'block';
     reportCard.style.display = 'none';
     myRecordsCard.style.display = 'none';
     configCard.style.display = 'none';
-    welcomeTxt.textContent = `Bem-vindo, ${currentUser}`;
+    welcomeTxt.textContent = Bem-vindo, ${currentUser};
+
+    // Mostra/Esconde botões de proprietário (Relatório e Configuração)
+    // Assume que 'pierote' é o proprietário, mas usa a senha de proprietário para garantir
+    const isOwner = currentUser === 'pierote';
+    openReportBtn.style.display = isOwner ? 'block' : 'none';
+    configBtn.style.display = isOwner ? 'block' : 'none';
+    
+    // NOVO: Preenche a lista de seleção de usuário no relatório
+    if (isOwner) {
+        populateReportUserSelect();
+        reportUserSelect.style.display = 'inline-block';
+    } else {
+         reportUserSelect.style.display = 'none';
+    }
 }
 
 // Lógica de registro de serviço
 svcBtns.forEach(btn => {
     btn.addEventListener('click', () => {
         const serviceName = btn.getAttribute('data-service');
-        const price = parseFloat(btn.textContent.match(/\(R\$(\d+)\)/)[1]);
+        const priceMatch = btn.textContent.match(/\(R\$(\d+)\)/);
+        const price = priceMatch ? parseFloat(priceMatch[1]) : 0; 
+        
         const isProduct = ['Pomada', 'Minoxidil'].includes(serviceName);
+        // Calcula a comissão de produto como R$5 fixos se for produto, senão usa a porcentagem
         const commission = isProduct ? 5 : (price * data.config.commissionPct / 100);
 
         const newRecord = {
@@ -107,12 +140,14 @@ svcBtns.forEach(btn => {
         };
         data.records.push(newRecord);
         saveStorageData(data);
-        alert(`Serviço "${serviceName}" registrado com sucesso para ${currentUser}.`);
+        alert(Serviço "${serviceName}" registrado com sucesso para ${currentUser}.);
     });
 });
 
 // Lógica de relatório
 openReportBtn.addEventListener('click', () => {
+    // Garante que o filtro de usuário seja redefinido para 'Todos' ao abrir o relatório
+    reportUserSelect.value = ''; 
     showReport();
 });
 
@@ -120,18 +155,31 @@ myRecordsBtn.addEventListener('click', () => {
     showMyRecords();
 });
 
-function showReport(startDate, endDate) {
+function showReport(startDate, endDate, targetUser = reportUserSelect.value) { // Adicionado targetUser
     actionsCard.style.display = 'none';
     myRecordsCard.style.display = 'none';
     configCard.style.display = 'none';
     reportCard.style.display = 'block';
+
+    const isOwner = currentUser === 'pierote';
+    
+    // Aplica o filtro de usuário (se for dono e tiver um usuário selecionado, usa o selecionado)
+    const userToFilter = isOwner && targetUser !== '' ? targetUser : '';
 
     const filteredRecords = data.records.filter(rec => {
         const recDate = new Date(rec.date);
         const start = startDate ? new Date(startDate) : new Date(0);
         const end = endDate ? new Date(endDate) : new Date();
         end.setHours(23, 59, 59, 999);
-        return recDate >= start && recDate <= end;
+        
+        // Filtro por data
+        const dateMatch = recDate >= start && recDate <= end;
+
+        // Filtro por funcionário
+        const userMatch = userToFilter === '' || rec.user === userToFilter;
+
+        return dateMatch && userMatch;
+
     }).sort((a, b) => new Date(b.date) - new Date(a.date));
 
     renderRecords(filteredRecords, reportList);
@@ -166,7 +214,7 @@ function renderRecords(records, container, showDelete = false) {
                 </div>
                 <div>
                     <span style="font-weight:bold;color:#eab869;">R$${rec.commission.toFixed(2)}</span>
-                    ${showDelete ? `<button data-id="${rec.id}" class="deleteBtn small" style="background:none; border:1px solid #f00; color:#f00; padding:2px 6px; border-radius:4px; margin-left:8px;">X</button>` : ''}
+                    ${showDelete ? <button data-id="${rec.id}" class="deleteBtn small" style="background:none; border:1px solid #f00; color:#f00; padding:2px 6px; border-radius:4px; margin-left:8px;">X</button> : ''}
                 </div>
             </div>
         `;
@@ -228,8 +276,14 @@ function renderSummary(records) {
     }
 }
 
+// Atualiza a chamada do relatório para incluir o filtro de funcionário
 applyRangeBtn.addEventListener('click', () => {
-    showReport(fromDateInput.value, toDateInput.value);
+    showReport(fromDateInput.value, toDateInput.value, reportUserSelect.value);
+});
+
+// NOVO: Adiciona listener para o filtro de funcionário
+reportUserSelect.addEventListener('change', () => {
+    showReport(fromDateInput.value, toDateInput.value, reportUserSelect.value);
 });
 
 presetRangeSelect.addEventListener('change', () => {
@@ -250,19 +304,29 @@ presetRangeSelect.addEventListener('change', () => {
         default:
             return;
     }
-    fromDateInput.valueAsDate = startDate;
-    toDateInput.valueAsDate = endDate;
-    showReport(startDate, endDate);
+    // Formata a data para o input date (YYYY-MM-DD)
+    const formatDate = (date) => date.toISOString().split('T')[0];
+    fromDateInput.value = formatDate(startDate);
+    toDateInput.value = formatDate(endDate);
+    
+    // Passa o filtro de usuário existente
+    showReport(fromDateInput.value, toDateInput.value, reportUserSelect.value); 
 });
 
 exportCsvBtn.addEventListener('click', () => {
+    // Usa o filtro de data e funcionário atual do relatório
+    const userToFilter = reportUserSelect.value;
+    const start = fromDateInput.value ? new Date(fromDateInput.value) : new Date(0);
+    const end = toDateInput.value ? new Date(toDateInput.value) : new Date();
+    end.setHours(23, 59, 59, 999);
+
     const headers = ["ID", "Usuário", "Serviço", "Preço", "Comissão", "Data"];
+    
     const recordsToExport = data.records.filter(rec => {
         const recDate = new Date(rec.date);
-        const start = fromDateInput.value ? new Date(fromDateInput.value) : new Date(0);
-        const end = toDateInput.value ? new Date(toDateInput.value) : new Date();
-        end.setHours(23, 59, 59, 999);
-        return recDate >= start && recDate <= end;
+        const dateMatch = recDate >= start && recDate <= end;
+        const userMatch = userToFilter === '' || rec.user === userToFilter;
+        return dateMatch && userMatch;
     });
 
     const rows = recordsToExport.map(rec => [
@@ -283,7 +347,7 @@ exportCsvBtn.addEventListener('click', () => {
     const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
     link.setAttribute("href", url);
-    link.setAttribute("download", "relatorio-barbearia.csv");
+    link.setAttribute("download", relatorio-${userToFilter || 'geral'}.csv);
     link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();
@@ -299,23 +363,51 @@ configBtn.addEventListener('click', () => {
     
     // Preenche os campos com os dados atuais
     document.getElementById('cfgTitle').value = data.config.title;
+    document.getElementById('cfgPct').value = data.config.commissionPct;
+
     const users = Object.keys(data.config.users);
+    
+    // Tentativa de carregar os 3 campos corretamente, assumindo a ordem padrão
+    // Isso é mais robusto para manter os nomes dos 3 usuários que você tem.
     document.getElementById('cfgUser1').value = users[0] || '';
     document.getElementById('cfgPass1').value = data.config.users[users[0]] || '';
+    
     document.getElementById('cfgUser2').value = users[1] || '';
     document.getElementById('cfgPass2').value = data.config.users[users[1]] || '';
-    document.getElementById('cfgPct').value = data.config.commissionPct;
+    
+    document.getElementById('cfgUser3').value = users[2] || '';
+    document.getElementById('cfgPass3').value = data.config.users[users[2]] || '';
+
 });
 
 saveCfgBtn.addEventListener('click', () => {
     const newConfig = {
         title: document.getElementById('cfgTitle').value,
-        users: {
-            [document.getElementById('cfgUser1').value.toLowerCase()]: document.getElementById('cfgPass1').value,
-            [document.getElementById('cfgUser2').value.toLowerCase()]: document.getElementById('cfgPass2').value
-        },
+        users: {},
         commissionPct: parseFloat(document.getElementById('cfgPct').value)
     };
+    
+    // Processa o primeiro usuário (Geralmente Proprietário)
+    const user1 = document.getElementById('cfgUser1').value.toLowerCase();
+    const pass1 = document.getElementById('cfgPass1').value;
+    if (user1 && pass1) {
+        newConfig.users[user1] = pass1;
+    }
+    
+    // Processa o segundo usuário (Funcionário - Luís)
+    const user2 = document.getElementById('cfgUser2').value.toLowerCase();
+    const pass2 = document.getElementById('cfgPass2').value;
+    if (user2 && pass2) {
+        newConfig.users[user2] = pass2;
+    }
+    
+    // Processa o terceiro usuário (Funcionário - Matheus)
+    const user3 = document.getElementById('cfgUser3').value.toLowerCase();
+    const pass3 = document.getElementById('cfgPass3').value;
+    if (user3 && pass3) {
+        newConfig.users[user3] = pass3;
+    }
+
     data.config = newConfig;
     saveStorageData(data);
     showActions(); // Volta para a tela principal

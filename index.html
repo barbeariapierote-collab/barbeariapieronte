@@ -75,9 +75,9 @@
         </div>
         <div style="margin-top:8px">
           <label>Logo (clique na imagem principal para carregar)</label>
-          </div>
+        </div>
 
-        <div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
           <div>
             <label>Funcionário 1 - Nome</label>
             <input type="text" id="cfgUser1" />
@@ -86,9 +86,13 @@
             <label>Funcionário 2 - Nome</label>
             <input type="text" id="cfgUser2" />
           </div>
+          <div>
+            <label>Funcionário 3 - Nome</label>
+            <input type="text" id="cfgUser3" />
+          </div>
         </div>
 
-        <div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
           <div>
             <label>Senha Usuário 1</label>
             <input type="text" id="cfgPass1" />
@@ -96,6 +100,10 @@
           <div>
             <label>Senha Usuário 2</label>
             <input type="text" id="cfgPass2" />
+          </div>
+          <div>
+            <label>Senha Usuário 3</label>
+            <input type="text" id="cfgPass3" />
           </div>
         </div>
 
@@ -115,6 +123,13 @@
     <div>
       <div class="card" id="reportCard" style="display:none">
         <h3>Relatório</h3>
+        <div style="margin-bottom:8px">
+          <label class="small">Funcionário (Dono vê todos por padrão):</label>
+          <select id="reportUserSelect">
+            <option value="">Todos</option>
+            </select>
+        </div>
+
         <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
           <label class="small">Período:</label>
           <input type="date" id="fromDate" />
