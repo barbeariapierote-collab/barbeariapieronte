@@ -1,0 +1,136 @@
+body {
+  margin: 0;
+  padding: 20px;
+  background: #0d0d0d !important;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo-main {
+  display: block;
+  margin: 0 auto 24px auto;
+  max-width: 250px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.grid {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+  max-width: 1000px;
+}
+
+.card {
+  background: #1c1c1c;
+  padding: 24px;
+  border-radius: 12px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  flex: 1;
+  min-width: 300px;
+}
+
+h3 {
+  color: #eab869;
+  border-bottom: 2px solid rgba(234, 184, 105, 0.2);
+  padding-bottom: 8px;
+  margin-bottom: 16px;
+}
+
+.btn, .btn-hollow {
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease-in-out;
+  flex-grow: 1;
+}
+
+.btn {
+  background: #eab869;
+  color: #222;
+  font-weight: bold;
+}
+
+.btn:hover {
+  background: #d8a658;
+  transform: translateY(-2px);
+}
+
+.btn-hollow {
+  background: none;
+  color: #eab869;
+  border: 1px solid #eab869;
+}
+
+.btn-hollow:hover {
+  background: rgba(234, 184, 105, 0.1);
+  transform: translateY(-2px);
+}
+
+.small {
+  font-size: 13px;
+}
+
+.muted {
+  color: #999;
+}
+
+.service-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.svcBtn {
+  background: #2b2b2b;
+  color: #fff;
+  border: 1px solid #444;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s ease-in-out;
+}
+
+.svcBtn:hover {
+  background: #3a3a3a;
+}
+
+label {
+  font-weight: bold;
+  color: #ccc;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="date"],
+select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #444;
+  background: #111;
+  color: #fff;
+  margin-top: 4px;
+  box-sizing: border-box;
+}
+
+input[type="date"] {
+  width: auto;
+}
+
+footer {
+  margin-top: 24px !important;
+  text-align: center;
+  color: #666 !important;
+  font-size: 12px;
+}

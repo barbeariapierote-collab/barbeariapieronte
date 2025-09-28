@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Painel Barbearia</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body style="background:#111; color:#fff; font-family:Arial,sans-serif;">
+  <img src="logo.jpg" alt="Logo Pierote Barbearia" class="logo-main" />
+
+  <div class="grid">
+    <div>
+      <div class="card" id="loginCard">
+        <h3>Entrar</h3>
+        <div style="margin-top:8px">
+          <label>Usuário</label>
+          <input type="text" id="inpUser" placeholder="ex: Luis" />
+        </div>
+        <div style="margin-top:8px">
+          <label>Senha</label>
+          <input type="password" id="inpPass" placeholder="senha" />
+        </div>
+        <div style="margin-top:10px;display:flex;gap:8px">
+          <button class="btn" id="loginBtn">Entrar</button>
+          <button class="btn-hollow" id="demoBtn">Entrar como Dono (demo)</button>
+        </div>
+
+        <hr style="margin:12px 0;border:none;border-top:1px solid rgba(255,255,255,0.03)" />
+        <div class="small">Credenciais padrão (pode alterar em Configuração):</div>
+        <div class="small"><strong>Dono:</strong> user: pierote / senha: ownerpass</div>
+        <div class="small"><strong>Luis:</strong> user: luis / senha: luis123</div>
+        <div class="small"><strong>Matheus:</strong> user: matheus / senha: matheus123</div>
+      </div>
+
+      <div class="card" id="actionsCard" style="display:none">
+        <h3 id="welcomeTxt">Bem-vindo</h3>
+
+        <div style="margin-top:10px">
+          <div class="small">Registrar serviço rapidamente:</div>
+          <div style="margin-top:8px">
+            <div class="service-row">
+              <button data-service="Cabelo" class="svcBtn">Cabelo (R$35)</button>
+              <button data-service="Barba" class="svcBtn">Barba (R$35)</button>
+            </div>
+            <div class="service-row">
+              <button data-service="Desondulacao" class="svcBtn">Desondulação (R$80)</button>
+              <button data-service="Sobrancelhas" class="svcBtn">Sobrancelhas (R$15)</button>
+            </div>
+            <div class="service-row">
+              <button data-service="Hidratacao" class="svcBtn">Hidratação (R$30)</button>
+              <button data-service="Riscos" class="svcBtn">Riscos (R$5)</button>
+            </div>
+            <div class="service-row">
+              <button data-service="Pomada" class="svcBtn">Pomada (R$30)</button>
+              <button data-service="Minoxidil" class="svcBtn">Minoxidil (R$95)</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn" id="openReport">Ver Relatório</button>
+          <button class="btn-hollow" id="myRecordsBtn">Meus Registros</button>
+          <button class="btn-hollow" id="configBtn">Configuração</button>
+        </div>
+
+        <div style="margin-top:12px" class="small muted">Obs: comissão automática: 40% para serviços; R$5 fixo por produto (Pomada/Minoxidil).</div>
+      </div>
+
+      <div class="card" id="configCard" style="display:none">
+        <h3>Configuração</h3>
+        <div class="small">Alterar credenciais e valores (salva localmente)</div>
+        <div style="margin-top:8px">
+          <label>Nome do Painel</label>
+          <input type="text" id="cfgTitle" />
+        </div>
+        <div style="margin-top:8px">
+          <label>Logo (clique na imagem principal para carregar)</label>
+          </div>
+
+        <div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div>
+            <label>Funcionário 1 - Nome</label>
+            <input type="text" id="cfgUser1" />
+          </div>
+          <div>
+            <label>Funcionário 2 - Nome</label>
+            <input type="text" id="cfgUser2" />
+          </div>
+        </div>
+
+        <div style="margin-top:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div>
+            <label>Senha Usuário 1</label>
+            <input type="text" id="cfgPass1" />
+          </div>
+          <div>
+            <label>Senha Usuário 2</label>
+            <input type="text" id="cfgPass2" />
+          </div>
+        </div>
+
+        <div style="margin-top:8px">
+          <label>Comissão (%) para serviços</label>
+          <input type="text" id="cfgPct" />
+        </div>
+
+        <div style="margin-top:8px;display:flex;gap:8px">
+          <button class="btn" id="saveCfgBtn">Salvar</button>
+          <button class="btn-hollow" id="resetBtn">Resetar Dados (limpar registros)</button>
+        </div>
+      </div>
+
+    </div>
+
+    <div>
+      <div class="card" id="reportCard" style="display:none">
+        <h3>Relatório</h3>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <label class="small">Período:</label>
+          <input type="date" id="fromDate" />
+          <input type="date" id="toDate" />
+          <select id="presetRange">
+            <option value="">— Presets —</option>
+            <option value="today">Hoje</option>
+            <option value="month">Mês atual</option>
+            <option value="last7">Últimos 7 dias</option>
+          </select>
+          <button class="btn" id="applyRange">Aplicar</button>
+        </div>
+
+        <div style="margin-top:12px" id="summaryArea"></div>
+
+        <div style="margin-top:10px">
+          <button class="btn" id="exportCsv">Exportar CSV</button>
+        </div>
+
+        <hr style="margin:12px 0;border:none;border-top:1px solid rgba(255,255,255,0.03)" />
+
+        <div id="recordsList" style="max-height:320px;overflow:auto"></div>
+      </div>
+
+      <div class="card" id="myRecordsCard" style="display:none">
+        <h3>Meus Registros</h3>
+        <div id="myRecList" style="max-height:320px;overflow:auto"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer style="margin-top:12px;text-align:center;color:#999;font-size:12px">
+    Sistema local — os dados ficam no celular/ navegador. Para compartilhar entre aparelhos, exporte o CSV e importe em outra máquina.
+  </footer>
+  <script src="script.js"></script>
+</body>
+</html>
