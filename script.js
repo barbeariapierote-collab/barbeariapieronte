@@ -123,7 +123,7 @@ function showActions() {
     reportCard.style.display = 'none';
     myRecordsCard.style.display = 'none';
     configCard.style.display = 'none';
-    welcomeTxt.textContent = Bem-vindo, ${currentUser};
+    welcomeTxt.textContent = 'Bem-vindo, $ {currentUser}';
 
     // Mostra/Esconde botões de proprietário (Relatório e Configuração)
     const isOwner = data.config.users[currentUser] === 'ownerpass' || currentUser === 'pierote';
@@ -157,7 +157,7 @@ svcBtns.forEach(btn => {
         };
         data.records.push(newRecord);
         saveStorageData(data);
-        alert(Serviço "${serviceName}" registrado com sucesso para ${currentUser}.);
+        alert('Serviço "${serviceName}" registrado com sucesso para ${currentUser}.');
     });
 });
 
@@ -360,7 +360,7 @@ exportCsvBtn.addEventListener('click', () => {
     const link = document.createElement("a");
     const url = URL.createObjectURL(blob);
     link.setAttribute("href", url);
-    link.setAttribute("download", relatorio-${userToFilter || 'geral'}.csv);
+    link.setAttribute("download", `relatorio-${userToFilter || 'geral'}.csv`);
     link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();
