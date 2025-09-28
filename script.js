@@ -123,7 +123,7 @@ function showActions() {
     reportCard.style.display = 'none';
     myRecordsCard.style.display = 'none';
     configCard.style.display = 'none';
-    welcomeTxt.textContent = 'Bem-vindo, $ {currentUser}';
+    welcomeTxt.textContent = `Bem-vindo, ${currentUser}`;
 
     // Mostra/Esconde botões de proprietário (Relatório e Configuração)
     const isOwner = data.config.users[currentUser] === 'ownerpass' || currentUser === 'pierote';
@@ -157,7 +157,7 @@ svcBtns.forEach(btn => {
         };
         data.records.push(newRecord);
         saveStorageData(data);
-        alert('Serviço "${serviceName}" registrado com sucesso para ${currentUser}.');
+        alert(`Serviço "${serviceName}" registrado com sucesso para ${currentUser}.`);
     });
 });
 
@@ -228,7 +228,7 @@ function renderRecords(records, container, showDelete = false) {
                 </div>
                 <div>
                     <span style="font-weight:bold;color:#eab869;">R$${rec.commission.toFixed(2)}</span>
-                    ${showDelete ? <button data-id="${rec.id}" class="deleteBtn small" style="background:none; border:1px solid #f00; color:#f00; padding:2px 6px; border-radius:4px; margin-left:8px;">X</button> : ''}
+                    ${showDelete ? `<button data-id="${rec.id}" class="deleteBtn small" style="background:none; border:1px solid #f00; color:#f00; padding:2px 6px; border-radius:4px; margin-left:8px;">X</button>` : ''}
                 </div>
             </div>
         `;
